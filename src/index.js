@@ -7,7 +7,7 @@ import ReduxProvider from './components/ReduxProvider';
 import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render((
-  <ReduxProvider>
+	<ReduxProvider>
 		<BrowserRouter>
 			<App />
 		</BrowserRouter>

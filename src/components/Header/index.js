@@ -7,55 +7,55 @@ import Modesta from '../../data/Modesta';
 import ConstructCSS from '../../helpers/ConstructCSS';
 
 class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.open = React.createRef();
-    this.openNavbar = this.openNavbar.bind(this);
+	constructor(props) {
+		super(props);
+		this.open = React.createRef();
+		this.openNavbar = this.openNavbar.bind(this);
 		this.closeNavbar = this.closeNavbar.bind(this);
 		
 		this.state = {
 			open: false
 		};
-  }
+	}
 
-  openNavbar() {
+	openNavbar() {
 		this.setState({
 			open: true
 		});
-  }
+	}
 
-  closeNavbar() {
+	closeNavbar() {
 		this.setState({
 			open: false
 		});
-  }
+	}
 
-  render() {
-    return (
-      <div className={styles.navbar}>
-        <div className={ConstructCSS(displayCSS.desktop, Modesta.navContainer, styles.desktopNavbar, Modesta.default)}>
-          <h1 className={Modesta.navTitle}>
-            <Link to="/">
-              Home
-            </Link>
-          </h1>
+	render() {
+		return (
+			<div className={styles.navbar}>
+				<div className={ConstructCSS(displayCSS.desktop, Modesta.navContainer, styles.desktopNavbar, Modesta.default)}>
+					<h1 className={Modesta.navTitle}>
+						<Link to="/">
+							Home
+						</Link>
+					</h1>
 
-          <div className={Modesta.sidenav}>
-            <NavbarLinks />
-          </div>
-        </div>
-        <div className={ConstructCSS(displayCSS.mobile, Modesta.navContainer, styles.mobileNavbar)}>
-          <span ref={this.open} className={Modesta.menuIcon} onClick={this.openNavbar}></span>
+					<div className={Modesta.sidenav}>
+						<NavbarLinks />
+					</div>
+				</div>
+				<div className={ConstructCSS(displayCSS.mobile, Modesta.navContainer, styles.mobileNavbar)}>
+					<span ref={this.open} className={Modesta.menuIcon} onClick={this.openNavbar}></span>
 
-          <div className={ConstructCSS(styles.mobileNavContent, Modesta.navContent)}>
-            <h4 className={styles.mobileHeading}>
-              <Link to="/">
-                Home
-              </Link>
-            </h4>
-          </div>
+					<div className={ConstructCSS(styles.mobileNavContent, Modesta.navContent)}>
+						<h4 className={styles.mobileHeading}>
+							<Link to="/">
+								Home
+							</Link>
+						</h4>
+					</div>
 
-          <div
+					<div
 						className={Modesta.sidenav}
 						ref={this.navside}
 						style={this.state.open ? {
@@ -63,10 +63,10 @@ class Header extends Component {
 						} : {
 							transform: 'translateX(-250px)'
 						}}>
-            <NavbarLinks />
-          </div>
-        </div>
-        <div
+						<NavbarLinks />
+					</div>
+				</div>
+				<div
 					className={ConstructCSS(styles.darken, displayCSS.mobile)}
 					onClick={this.closeNavbar}
 					style={this.state.open ? {
@@ -76,9 +76,9 @@ class Header extends Component {
 						opacity: '0',
 						pointerEvents: 'none'
 					}}></div>
-      </div>
-    );
-  }
+			</div>
+		);
+	}
 }
 
 export default Header;
