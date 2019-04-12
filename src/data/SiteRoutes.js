@@ -5,11 +5,13 @@ const SiteRoutes = [
   {
     path: '/',
     component: HomePage,
-    exact: true,
+		exact: true,
+		status: 200,
   }, {
     path: '/',
     component: NotFound,
-    exact: false,
+		exact: false,
+		status: 404,
   }
 ];
 

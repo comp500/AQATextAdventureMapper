@@ -8,9 +8,18 @@ class Router extends Component {
       <Switch>
         {
           SiteRoutes
-            .map((route) => {
+            .map((route, index) => {
+							const RouteComponent = route.component;
               return (
-                <Route path={route.path} component={route.component} exact={route.exact}/>
+                <Route key={index} path={route.path} exact={route.exact} component={({ match, location, staticContext}) => {
+									if (staticContext) {
+										staticContext.status = route.status || 200;
+									}
+
+									return (
+										<RouteComponent match={match} location={location} staticContext={staticContext} />
+									)
+								}} />
               )
             })
         }
