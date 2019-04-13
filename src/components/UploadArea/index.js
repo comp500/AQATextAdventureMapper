@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
 class UploadArea extends Component {
-	fileInputRef: React.Ref;
-
 	constructor(props) {
 		super(props);
 		this.fileInputRef = React.createRef();
