@@ -22,5 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Compiled javascript
-/src/index.js
+# Parcel
+/dist
+/.cache
