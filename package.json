@@ -1,35 +1,38 @@
 {
-	"name": "aqa-text-adventure-mapper",
-	"version": "0.1.0",
-	"private": true,
-	"dependencies": {
-		"@types/jest": "^24.0.11",
-		"@types/node": "^11.13.4",
-		"@types/react": "^16.8.13",
-		"@types/react-dom": "^16.8.4",
-		"node-sass": "^4.11.0",
-		"react": "^16.8.6",
-		"react-dom": "^16.8.6",
-		"react-redux": "^7.0.2",
-		"react-router-dom": "^5.0.0",
-		"react-scripts": "2.1.8",
-		"redux": "^4.0.1",
-		"redux-thunk": "^2.3.0",
-		"typescript": "^3.4.3"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-	"browserslist": [
-		">0.2%",
-		"not dead",
-		"not ie <= 11",
-		"not op_mini all"
-	]
+  "name": "aqatextadventuremapper",
+  "version": "1.0.0",
+  "description": "A map maker for AQATextAdventure.",
+  "main": "src/index.ts",
+  "scripts": {
+	"build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp500/AQATextAdventureMapper.git"
+  },
+  "keywords": [
+    "AQA",
+    "canvas",
+    "map"
+  ],
+  "author": "comp500",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/comp500/AQATextAdventureMapper/issues"
+  },
+  "homepage": "https://github.com/comp500/AQATextAdventureMapper#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "rollup": "^1.10.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.9.3",
+    "typescript": "^3.4.3"
+  },
+  "dependencies": {
+    "lit-html": "^1.0.0"
+  }
 }
