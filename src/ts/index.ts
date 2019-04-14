@@ -1,7 +1,20 @@
-import SaveParser from "./SaveParser";
+import parseSave, { Save } from "./SaveParser";
 import { html, render, TemplateResult } from "lit-html";
+import Mapper from "./Mapper";
 
 if (File && FileReader && FileList && Blob) {
+	let currentMapper = null;
+
+	let displayError = (err: string) => {
+		document.getElementById("error-parent").classList.remove("is-hidden");
+		render(
+			html`
+				<strong>There was an error reading the file: </strong><br />${err}
+			`,
+			document.getElementById("error")
+		);
+	};
+
 	document.getElementById("save-input").addEventListener("change", e => {
 		let files = (<HTMLInputElement>e.target).files;
 		if (files.length > 0) {
@@ -12,16 +25,21 @@ if (File && FileReader && FileList && Blob) {
 
 			let reader = new FileReader();
 			reader.onload = () => {
-				console.log(SaveParser(<ArrayBuffer>reader.result));
+				if (currentMapper != null) {
+					currentMapper.cleanup();
+				}
+				let save: Save = null;
+				try {
+					save = parseSave(<ArrayBuffer>reader.result);
+				} catch (e) {
+					displayError(e);
+				}
+				if (save != null) {
+					currentMapper = new Mapper(save);
+				}
 			};
 			reader.onerror = () => {
-				document.getElementById("error-parent").classList.remove("is-hidden");
-				render(
-					html`
-						<strong>There was an error reading the file: </strong><br />${reader.error}
-					`,
-					document.getElementById("error")
-				);
+				displayError(reader.error.toString());
 			};
 
 			reader.readAsArrayBuffer(files[0]);

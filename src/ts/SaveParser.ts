@@ -20,7 +20,7 @@ class OffsetCounter {
 	}
 }
 
-class Place {
+export class Place {
 	constructor(
 		public description: string,
 		public id: number,
@@ -57,7 +57,7 @@ class Place {
 	}
 }
 
-class Character {
+export class Character {
 	constructor(public name: string, public description: string, public id: number, public currentLocation: number) {}
 
 	static parse(buffer: ArrayBuffer, offset = new OffsetCounter()) {
@@ -77,7 +77,7 @@ class Character {
 	}
 }
 
-class Item {
+export class Item {
 	constructor(
 		public id: number,
 		public location: number,
@@ -114,7 +114,7 @@ class Item {
 	}
 }
 
-class Save {
+export class Save {
 	constructor(public characters: Character[], public places: Place[], public items: Item[]) {}
 }
 
