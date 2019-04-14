@@ -1,5 +1,6 @@
 import { html, render, TemplateResult } from "lit-html";
 import { GameObject } from "./Objects";
+import { Save } from "./SaveParser";
 
 export default class InfoRenderer {
 	infoPanel = document.getElementById("info-panel");
@@ -15,18 +16,18 @@ export default class InfoRenderer {
 		if (this.selected == null) {
 			content = html`<p class="title is-4 is-paddingless">Select an item, character or place...</p>`;
 		} else {
-			content = html`nothing to see here`;
+			content = this.selected.renderInfo(this.save, true);
 		}
 
 		return html`${content}`;
 	}
 
-	render(selection) {
+	select(selection) {
 		this.selected = selection;
 		render(this.renderContent(), this.infoPanel);
 	}
 
-	constructor() {
+	constructor(public save: Save) {
 		this.reset();
 	}
 }
