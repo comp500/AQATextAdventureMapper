@@ -2,15 +2,33 @@
 	<head>
 		<title>AQA Text Adventure Mapper</title>
 		<link rel="stylesheet" type="text/css" href="css/index.scss" />
+		<link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet" />
 	</head>
 	<body>
 		<div class="container">
-			<h1 class="title">AQA Text Adventure Mapper</h1>
-			<div id="error"></div>
-			<div class="">
-					<div id="hi"></div>
+			<h1 class="title is-2">AQA Text Adventure Mapper</h1>
 
-					<div id="pane"></div>
+			<article class="message is-danger is-hidden" id="error-parent">
+				<div class="message-body" id="error"></div>
+			</article>
+			<div class="file is-primary" id="save-input-parent">
+				<label class="file-label">
+					<input class="file-input" type="file" id="save-input" accept=".gme" />
+					<span class="file-cta">
+						<span class="file-icon">
+							<i class="icon ion-md-document"></i>
+						</span>
+						<span class="file-label">
+							Open a .gme file...
+						</span>
+					</span>
+					<span class="file-name is-hidden" id="save-input-name"></span>
+				</label>
+			</div>
+			<div class="">
+				<div id="hi"></div>
+
+				<div id="pane"></div>
 			</div>
 		</div>
 		<script src="ts/index.ts"></script>
