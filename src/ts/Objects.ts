@@ -1,6 +1,10 @@
-export class GameObject {}
+import { html, TemplateResult } from "lit-html";
 
-export class Place {
+export abstract class GameObject {
+	abstract renderInfo(): TemplateResult
+}
+
+export class Place extends GameObject {
 	constructor(
 		public description: string,
 		public id: number,
@@ -10,14 +14,26 @@ export class Place {
 		public west: number,
 		public up: number,
 		public down: number
-	) {}
+	) {
+		super();
+	}
+
+	renderInfo() {
+		return html`Place selected!`;
+	}
 }
 
-export class Character {
-	constructor(public name: string, public description: string, public id: number, public currentLocation: number) {}
+export class Character extends GameObject {
+	constructor(public name: string, public description: string, public id: number, public currentLocation: number) {
+		super();
+	}
+
+	renderInfo() {
+		return html`Character selected!`;
+	}
 }
 
-export class Item {
+export class Item extends GameObject {
 	constructor(
 		public id: number,
 		public location: number,
@@ -26,5 +42,11 @@ export class Item {
 		public name: string,
 		public commands: string,
 		public results: string
-	) {}
+	) {
+		super();
+	}
+
+	renderInfo() {
+		return html`Item selected!`;
+	}
 }
