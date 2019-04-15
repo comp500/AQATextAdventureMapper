@@ -185,7 +185,7 @@ export class Item extends GameObject {
 			<p class="title ${isAncestor ? "is-4" : "is-6 is-marginless"} is-paddingless">Item: ${name}</p>
 			<p><strong>Description: </strong>${this.description}</p>
 			<p><strong>Status: </strong>${this.status}</p>
-			<p><strong>Commands: </strong>${this.commands} -> ${this.results}</p>
+			<p><strong>Commands: </strong>${this.printCommands(save)}</p>
 			${subItems.length > 0
 				? html`
 						<p><strong>Contains: </strong></p>
@@ -210,6 +210,52 @@ export class Item extends GameObject {
 
 	getOutputForCommand(command: string) {
 		return this.getCommands()[command];
+	}
+
+	static printCommand(command: string, result: string, save: Save): TemplateResult {
+		command = sentenceCase(command);
+
+		if (result.includes("lockunlock")) {
+			let split = result.split(",");
+			let unlocks = getObjectById(parseInt(split[1]), save);
+			if (unlocks instanceof Item) {
+				return html`<p>${command}: Locks/unlocks ${(<Item>unlocks).name}</p>`;
+			} else {
+				return html`<p>${command}: Locks/unlocks ${unlocks.id}</p>`;
+			}
+		}
+		switch (command) {
+			case "Open":
+				return html`
+					<p>Open: Open ${result.split(",")[0]} pathway</p>
+				`;
+			case "Close":
+				return html`
+					<p>Close: Close ${result.split(",")[0]} pathway</p>
+				`;
+			default:
+				let split = result.split(",");
+				if (split.length > 1 && split[0] == "say") {
+					return html`
+						<p>${command}: ${split[1]}</p>
+					`;
+				}
+				if (result == "n/a") {
+					result = "N/A";
+				} else {
+					result = sentenceCase(result);
+				}
+				return html`
+					<p>${command}: ${result}</p>
+				`;
+		}
+	}
+
+	printCommands(save: Save) {
+		let commands = this.getCommands();
+		return html`
+			${Object.keys(commands).map(command => Item.printCommand(command, commands[command], save))}
+		`;
 	}
 
 	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer, redraw: () => void) {
