@@ -1,5 +1,6 @@
 import { html, TemplateResult } from "lit-html";
 import { Save } from "./SaveParser";
+import InfoRenderer from "./InfoRenderer";
 
 export class Position {
 	constructor(public x: number, public y: number, public z: number) {}
@@ -25,7 +26,9 @@ export abstract class GameObject {
 
 	abstract renderInfo(save: Save, isAncestor: boolean): TemplateResult;
 
-	renderCanvas(ctx: CanvasRenderingContext2D, save: Save) {}
+	abstract renderCanvas(ctx: CanvasRenderingContext2D, save: Save, selectedObject: GameObject);
+
+	abstract wasClicked(x: number, y: number): boolean;
 
 	//abstract getPosition(): Position
 }
@@ -83,10 +86,11 @@ export class Place extends GameObject {
 			}
 		};
 
+		// Y is flipped as y goes downwards in canvas
 		let posMap = {
-			north: new Position(this.position.x, this.position.y + 1, this.position.z),
+			north: new Position(this.position.x, this.position.y - 1, this.position.z),
 			east: new Position(this.position.x + 1, this.position.y, this.position.z),
-			south: new Position(this.position.x, this.position.y - 1, this.position.z),
+			south: new Position(this.position.x, this.position.y + 1, this.position.z),
 			west: new Position(this.position.x - 1, this.position.y, this.position.z),
 			up: new Position(this.position.x, this.position.y, this.position.z + 1),
 			down: new Position(this.position.x, this.position.y, this.position.z - 1)
@@ -109,6 +113,26 @@ export class Place extends GameObject {
 				let id = parseInt(split[1]);
 				recursePosition(getObjectById(id, save), posMap[dir]);
 			});
+	}
+
+	renderCanvas(ctx: CanvasRenderingContext2D, save: Save, selectedObject: GameObject) {
+		let scale = 10;
+		if (selectedObject == this) {
+			ctx.fillStyle = "blue";
+		}
+		ctx.fillRect((this.position.x + 5) * scale * 2, (this.position.y + 5) * scale * 2, scale, scale);
+		ctx.fillStyle = "black";
+	}
+
+	wasClicked(x: number, y: number): boolean {
+		let scale = 10;
+		if (x >= (this.position.x + 5) * scale * 2 || x <= (this.position.x + 6) * scale * 2) {
+			return true;
+		}
+		if (y >= (this.position.y + 5) * scale * 2 || y <= (this.position.y + 6) * scale * 2) {
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -138,6 +162,14 @@ export class Character extends GameObject {
 				: html``}
 			${subItems}
 		`;
+	}
+
+	renderCanvas(ctx: CanvasRenderingContext2D, save: Save) {
+		throw new Error("Method not implemented.");
+	}
+
+	wasClicked(x: number, y: number) {
+		return false;
 	}
 }
 
@@ -194,5 +226,13 @@ export class Item extends GameObject {
 
 	getOutputForCommand(command: string) {
 		return this.getCommands()[command];
+	}
+
+	renderCanvas(ctx: CanvasRenderingContext2D, save: Save) {
+		throw new Error("Method not implemented.");
+	}
+
+	wasClicked(x: number, y: number) {
+		return false;
 	}
 }
