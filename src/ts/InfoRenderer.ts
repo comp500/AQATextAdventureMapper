@@ -22,7 +22,7 @@ export default class InfoRenderer {
 		return html`${content}`;
 	}
 
-	select(selection) {
+	select(selection: GameObject) {
 		this.selected = selection;
 		render(this.renderContent(), this.infoPanel);
 	}

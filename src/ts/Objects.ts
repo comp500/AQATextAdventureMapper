@@ -11,12 +11,17 @@ function getSubObjects(id: number, save: Save): GameObject[] {
 	);
 }
 
+function getObjectById(id: number, save: Save): GameObject | undefined {
+	return (<GameObject[]>save.items).concat(save.places, save.characters).find(obj => obj.id == id);
+}
+
 function sentenceCase(str: string) {
 	return str[0].toUpperCase() + str.substr(1).toLowerCase();
 }
 
 export abstract class GameObject {
 	public selected = false;
+	public id: number;
 
 	abstract renderInfo(save: Save, isAncestor: boolean): TemplateResult;
 
@@ -26,6 +31,8 @@ export abstract class GameObject {
 }
 
 export class Place extends GameObject {
+	public position = null;
+
 	constructor(
 		public description: string,
 		public id: number,
@@ -59,6 +66,49 @@ export class Place extends GameObject {
 				: html``}
 			${subItems}
 		`;
+	}
+
+	resolvePositions(save: Save, newPos: Position) {
+		if (this.position != null) {
+			if (this.position.x != newPos.x || this.position.y != newPos.y || this.position.z != newPos.z) {
+				throw new Error("Position already assigned, differs from existing!");
+			}
+			return;
+		}
+		this.position = newPos;
+
+		let recursePosition = (obj: GameObject, pos: Position) => {
+			if (obj != null && obj instanceof Place) {
+				(<Place>obj).resolvePositions(save, pos);
+			}
+		};
+
+		let posMap = {
+			north: new Position(this.position.x, this.position.y + 1, this.position.z),
+			east: new Position(this.position.x + 1, this.position.y, this.position.z),
+			south: new Position(this.position.x, this.position.y - 1, this.position.z),
+			west: new Position(this.position.x - 1, this.position.y, this.position.z),
+			up: new Position(this.position.x, this.position.y, this.position.z + 1),
+			down: new Position(this.position.x, this.position.y, this.position.z - 1)
+		};
+
+		recursePosition(getObjectById(this.north, save), posMap.north);
+		recursePosition(getObjectById(this.east, save), posMap.east);
+		recursePosition(getObjectById(this.south, save), posMap.south);
+		recursePosition(getObjectById(this.west, save), posMap.west);
+		recursePosition(getObjectById(this.up, save), posMap.up);
+		recursePosition(getObjectById(this.down, save), posMap.down);
+
+		(<Item[]>getSubObjects(this.id, save).filter(obj => obj != null && obj instanceof Item))
+			.filter(item => item.status == "close" || item.status == "locked")
+			.map(door => door.getOutputForCommand("open"))
+			.filter(result => result != null)
+			.forEach(result => {
+				let split = result.split(",");
+				let dir = split[0];
+				let id = parseInt(split[1]);
+				recursePosition(getObjectById(id, save), posMap[dir]);
+			});
 	}
 }
 
@@ -127,5 +177,22 @@ export class Item extends GameObject {
 				: html``}
 			${subItems}
 		`;
+	}
+
+	getCommands(): { [key: string]: string } {
+		let splitCommands = this.commands.split(",");
+		let splitResults = this.results.split(";");
+		let map = {} as { [key: string]: string };
+		splitCommands.forEach((command, i) => {
+			if (i >= splitResults.length) {
+				i = splitResults.length - 1;
+			}
+			map[command] = splitResults[i];
+		});
+		return map;
+	}
+
+	getOutputForCommand(command: string) {
+		return this.getCommands()[command];
 	}
 }

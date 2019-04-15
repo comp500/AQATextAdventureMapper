@@ -1,6 +1,7 @@
 import { Save } from "./SaveParser";
 import InfoRenderer from "./InfoRenderer";
 import FloorSelector from "./FloorSelector";
+import { Position } from "./Objects";
 
 export default class Mapper {
 	canvas = <HTMLCanvasElement>document.getElementById("map-canvas");
@@ -12,8 +13,24 @@ export default class Mapper {
 	constructor(public save: Save) {
 		this.ctx = this.canvas.getContext("2d");
 		this.infoRenderer = new InfoRenderer(save);
-		// TODO get floor min/max
-		this.floorSelector = new FloorSelector(0, 1, this.setFloor.bind(this));
+
+		// Resolve locations
+		if (save.places.length > 0) {
+			save.places[0].resolvePositions(save, new Position(0, 0, 0));
+		}
+		let floorMin = 0,
+			floorMax = 0;
+		save.places
+			.filter(place => place.position != null)
+			.forEach(place => {
+				if (place.position.z > floorMax) {
+					floorMax++;
+				}
+				if (place.position.z < floorMin) {
+					floorMin--;
+				}
+			});
+		this.floorSelector = new FloorSelector(floorMin, floorMax, this.setFloor.bind(this));
 
 		document.getElementById("mapper-panel").classList.remove("is-hidden");
 
@@ -25,8 +42,9 @@ export default class Mapper {
 		if (this.ctx != null) {
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		}
-		// TODO filter for floor
-		this.save.places.map(place => place.renderCanvas(this.ctx, this.save));
+		this.save.places
+			.filter(place => place.position != null && place.position.z == this.floor)
+			.map(place => place.renderCanvas(this.ctx, this.save));
 	}
 
 	cleanup() {
@@ -36,6 +54,7 @@ export default class Mapper {
 
 	setFloor(floor: number) {
 		this.floor = floor;
+		this.infoRenderer.select(null);
 		this.render();
 	}
 }

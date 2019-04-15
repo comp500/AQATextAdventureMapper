@@ -2,7 +2,7 @@ import { html, render } from "lit-html";
 
 export default class FloorSelector {
 	selectEl = document.getElementById("map-floor-select");
-	value = 1;
+	value = 0;
 	enabled = true;
 
 	constructor(public minValue: number, public maxValue: number, public onChange: (floor: number) => void) {
