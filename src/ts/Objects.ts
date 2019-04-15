@@ -27,7 +27,7 @@ export abstract class GameObject {
 
 	abstract renderInfo(save: Save, isAncestor: boolean): TemplateResult;
 
-	abstract renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer);
+	abstract renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer, redraw: () => void);
 
 	//abstract getPosition(): Position
 }
@@ -114,9 +114,13 @@ export class Place extends GameObject {
 			});
 	}
 
-	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer, redraw: () => void) {
 		let scale = 10;
-		drawing.rect(scale, scale).fill(infoRenderer.selected == this ? "blue" : "black");
+		let box = drawing.rect(scale, scale).fill(infoRenderer.selected == this ? "blue" : "black");
+		box.on("click", () => {
+			infoRenderer.select(this);
+			redraw();
+		});
 	}
 }
 
@@ -148,7 +152,7 @@ export class Character extends GameObject {
 		`;
 	}
 
-	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer, redraw: () => void) {
 		throw new Error("Method not implemented.");
 	}
 }
@@ -208,7 +212,7 @@ export class Item extends GameObject {
 		return this.getCommands()[command];
 	}
 
-	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer, redraw: () => void) {
 		throw new Error("Method not implemented.");
 	}
 }

@@ -39,11 +39,12 @@ export default class Mapper {
 	}
 
 	drawAll() {
+		this.drawing.clear();
 		this.save.places
 			.filter(place => place.position != null && place.position.z == this.floor)
 			.map(place => {
 				let nest = this.drawing.group();
-				place.renderDrawing(nest, this.save, this.infoRenderer);
+				place.renderDrawing(nest, this.save, this.infoRenderer, this.drawAll.bind(this));
 				let scale = 10;
 				nest.move((place.position.x + 5) * scale * 2, (place.position.y + 5) * scale * 2);
 			});
@@ -52,7 +53,6 @@ export default class Mapper {
 	cleanup() {
 		document.getElementById("mapper-panel").classList.add("is-hidden");
 		this.floorSelector.enabled = false;
-		this.drawing.clear();
 	}
 
 	setFloor(floor: number) {
