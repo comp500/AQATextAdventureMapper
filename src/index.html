@@ -11,19 +11,27 @@
 			<article class="message is-danger is-hidden" id="error-parent">
 				<div class="message-body" id="error"></div>
 			</article>
-			<div class="file is-primary" id="save-input-parent">
-				<label class="file-label">
-					<input class="file-input" type="file" id="save-input" accept=".gme" />
-					<span class="file-cta">
-						<span class="file-icon">
-							<i class="icon ion-md-document"></i>
+			<div class="buttons is-marginless">
+				<div class="file is-primary" id="save-input-parent">
+					<label class="file-label">
+						<input class="file-input" type="file" id="save-input" accept=".gme" />
+						<span class="file-cta">
+							<span class="file-icon">
+								<i class="icon ion-md-document"></i>
+							</span>
+							<span class="file-label">
+								Open a .gme file...
+							</span>
 						</span>
-						<span class="file-label">
-							Open a .gme file...
-						</span>
-					</span>
-					<span class="file-name is-hidden" id="save-input-name"></span>
-				</label>
+						<span class="file-name is-hidden" id="save-input-name"></span>
+					</label>
+				</div>
+				<div style="flex-grow: 1"></div>
+				<div class="buttons has-addons is-hidden" id="map-floor-select">
+					<a class="button" disabled>Go down</a>
+					<span class="button is-static">Floor 0</span>
+					<a class="button" disabled>Go up</a>
+				</div>
 			</div>
 			<br />
 			<div class="tile is-ancestor is-hidden" id="mapper-panel">
