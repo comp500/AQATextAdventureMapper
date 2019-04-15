@@ -2,19 +2,17 @@ import { Save } from "./SaveParser";
 import InfoRenderer from "./InfoRenderer";
 import FloorSelector from "./FloorSelector";
 import { Position, GameObject } from "./Objects";
+import { SVG, Svg } from "@svgdotjs/svg.js";
 
 export default class Mapper {
-	canvas = <HTMLCanvasElement>document.getElementById("map-canvas");
-	ctx: CanvasRenderingContext2D;
+	drawing: Svg;
 	infoRenderer: InfoRenderer;
 	floor = 0;
 	floorSelector: FloorSelector;
-	private boundClickHandler = this.clickHandler.bind(this);
 
 	constructor(public save: Save) {
-		this.ctx = this.canvas.getContext("2d");
 		this.infoRenderer = new InfoRenderer(save);
-		this.canvas.addEventListener("click", this.boundClickHandler);
+		this.drawing = SVG().addTo("#map-svg");
 
 		// Resolve locations
 		if (save.places.length > 0) {
@@ -37,44 +35,30 @@ export default class Mapper {
 		document.getElementById("mapper-panel").classList.remove("is-hidden");
 
 		this.infoRenderer.select(save.places[0]);
-		this.render();
+		this.drawAll();
 	}
 
-	render() {
-		if (this.ctx != null) {
-			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		}
+	drawAll() {
 		this.save.places
 			.filter(place => place.position != null && place.position.z == this.floor)
-			.map(place => place.renderCanvas(this.ctx, this.save, this.infoRenderer.selected));
+			.map(place => {
+				let nest = this.drawing.group();
+				place.renderDrawing(nest, this.save, this.infoRenderer);
+				let scale = 10;
+				nest.move((place.position.x + 5) * scale * 2, (place.position.y + 5) * scale * 2);
+			});
 	}
 
 	cleanup() {
 		document.getElementById("mapper-panel").classList.add("is-hidden");
 		this.floorSelector.enabled = false;
-		this.canvas.removeEventListener("click", this.boundClickHandler);
+		this.drawing.clear();
 	}
 
 	setFloor(floor: number) {
 		this.floor = floor;
 		this.infoRenderer.select(null);
-		this.render();
-	}
-
-	private clickHandler(e: MouseEvent) {
-		let x = e.pageX - this.canvas.offsetLeft;
-		let y = e.pageY - this.canvas.offsetTop;
-
-		if (this.save != null) {
-			console.log(e, x, y);
-			let found = this.save.characters.find(char => char.wasClicked(x, y)) as GameObject;
-			if (found == null) {
-				found = this.save.items.find(item => item.wasClicked(x, y));
-			}
-			if (found == null) {
-				found = this.save.places.find(place => place.wasClicked(x, y));
-			}
-			this.infoRenderer.select(found);
-		}
+		this.drawing.clear();
+		this.drawAll();
 	}
 }

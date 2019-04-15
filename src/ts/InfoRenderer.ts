@@ -14,12 +14,16 @@ export default class InfoRenderer {
 	private renderContent() {
 		let content: TemplateResult;
 		if (this.selected == null) {
-			content = html`<p class="title is-4 is-paddingless">Select an item, character or place...</p>`;
+			content = html`
+				<p class="title is-4 is-paddingless">Select an item, character or place...</p>
+			`;
 		} else {
 			content = this.selected.renderInfo(this.save, true);
 		}
 
-		return html`${content}`;
+		return html`
+			${content}
+		`;
 	}
 
 	select(selection: GameObject) {

@@ -1,6 +1,7 @@
 import { html, TemplateResult } from "lit-html";
 import { Save } from "./SaveParser";
 import InfoRenderer from "./InfoRenderer";
+import { Container } from "@svgdotjs/svg.js";
 
 export class Position {
 	constructor(public x: number, public y: number, public z: number) {}
@@ -26,9 +27,7 @@ export abstract class GameObject {
 
 	abstract renderInfo(save: Save, isAncestor: boolean): TemplateResult;
 
-	abstract renderCanvas(ctx: CanvasRenderingContext2D, save: Save, selectedObject: GameObject);
-
-	abstract wasClicked(x: number, y: number): boolean;
+	abstract renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer);
 
 	//abstract getPosition(): Position
 }
@@ -115,24 +114,9 @@ export class Place extends GameObject {
 			});
 	}
 
-	renderCanvas(ctx: CanvasRenderingContext2D, save: Save, selectedObject: GameObject) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
 		let scale = 10;
-		if (selectedObject == this) {
-			ctx.fillStyle = "blue";
-		}
-		ctx.fillRect((this.position.x + 5) * scale * 2, (this.position.y + 5) * scale * 2, scale, scale);
-		ctx.fillStyle = "black";
-	}
-
-	wasClicked(x: number, y: number): boolean {
-		let scale = 10;
-		if (x >= (this.position.x + 5) * scale * 2 || x <= (this.position.x + 6) * scale * 2) {
-			return true;
-		}
-		if (y >= (this.position.y + 5) * scale * 2 || y <= (this.position.y + 6) * scale * 2) {
-			return true;
-		}
-		return false;
+		drawing.rect(scale, scale).fill(infoRenderer.selected == this ? "blue" : "black");
 	}
 }
 
@@ -164,12 +148,8 @@ export class Character extends GameObject {
 		`;
 	}
 
-	renderCanvas(ctx: CanvasRenderingContext2D, save: Save) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
 		throw new Error("Method not implemented.");
-	}
-
-	wasClicked(x: number, y: number) {
-		return false;
 	}
 }
 
@@ -228,11 +208,7 @@ export class Item extends GameObject {
 		return this.getCommands()[command];
 	}
 
-	renderCanvas(ctx: CanvasRenderingContext2D, save: Save) {
+	renderDrawing(drawing: Container, save: Save, infoRenderer: InfoRenderer) {
 		throw new Error("Method not implemented.");
-	}
-
-	wasClicked(x: number, y: number) {
-		return false;
 	}
 }
