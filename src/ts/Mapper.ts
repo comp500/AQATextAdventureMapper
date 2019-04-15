@@ -53,6 +53,8 @@ export default class Mapper {
 	cleanup() {
 		document.getElementById("mapper-panel").classList.add("is-hidden");
 		this.floorSelector.enabled = false;
+		this.drawing.clear();
+		this.drawing.remove();
 	}
 
 	setFloor(floor: number) {
